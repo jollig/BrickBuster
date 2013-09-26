@@ -14,10 +14,13 @@ public class BrickBuster implements ApplicationListener {
 	public static final String LOG = BrickBuster.class.getSimpleName();
 	// a libgdx helper class that logs the current FPS each second
 	private FPSLogger fpsLogger;
-	
+
 	// all the game variables
 	private int windowWidth = 800;
 	private int windowHeight = 600;
+	private double minAngle = Math.PI/6;						// 30 degrees in radians
+	private double maxAngle = 5*Math.PI/6;						// 150 degrees in radians
+	private double angle = Math.PI/3;							// ball starts at 45 degree angel
 	private int mouseX = 0;										// for mouse control only the x-coordinate is needed
 	private boolean paused = false;
 	private boolean started = false;
@@ -25,6 +28,7 @@ public class BrickBuster implements ApplicationListener {
 	private int score = 0;
 	private int level = 1;
 	private int balls = 3;
+	
 	
 	// Point object for coordinates of ingame thingies
 	private Point point = new Point();
@@ -46,6 +50,12 @@ public class BrickBuster implements ApplicationListener {
 	public void create() {
 		mouseX = Gdx.graphics.getWidth()/2;						// we want our ball launching thingy to appear in the middle of the screen at start of game
 		
+		// creating instances of object thingys in the game
+		//launhcer
+		//ball
+		//bricks/wall
+		//whatever else comes later
+		
 		// logs what the h*** is happening
 		Gdx.app.log(BrickBuster.LOG, "Creating game");
         fpsLogger = new FPSLogger();
@@ -53,40 +63,44 @@ public class BrickBuster implements ApplicationListener {
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
+		Gdx.app.log(BrickBuster.LOG, "Rezising window to " + Gdx.graphics.getWidth() + " * " + Gdx.graphics.getHeight());
 	}
 
 	@Override
 	public void render() {
-		// TODO Auto-generated method stub
-		
+		display();
+		update();
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
 		
+		paused = true;
+		
 		//if game == started && !paused
 		//geyma vecotr og speed somehow
 		//frysta mouseX somehow
 		
-		
+		Gdx.app.log(BrickBuster.LOG, "Game Paused");
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
 		
+		paused = false;
+		
 		//if started && paused
 		//speed aftur í gang á gmala vectornum
 		//unfryst mouseX
+		
+		Gdx.app.log(BrickBuster.LOG, "Game Resume");
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
+		Gdx.app.log(BrickBuster.LOG, "Running the GDU (Game Disposal Unit)");
 	}
 
 	public void display() {
@@ -94,6 +108,7 @@ public class BrickBuster implements ApplicationListener {
 		Gdx.gl11.glClearColor(0f, 0f, 0f, 0f);
         Gdx.gl11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         
+        // set up the game window
         Gdx.gl11.glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
         Gdx.gl11.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -101,7 +116,7 @@ public class BrickBuster implements ApplicationListener {
         Gdx.glu.gluOrtho2D(Gdx.gl10, 0, Gdx.graphics.getWidth(), 0, Gdx.graphics.getHeight());
         
         // draw all the beautiful wonders of the universe
-        //drawScene();
+        drawScene();
         
         //Gdx.app.log(BrickBuster.LOG, "Running display method");
 	}
@@ -121,21 +136,31 @@ public class BrickBuster implements ApplicationListener {
 		// keyboard inputs for the game
 		if(Gdx.input.isKeyPressed(Input.Keys.Y)) {
 			// starta nýju geimi somehow - spurning hvort create() sé overkill
-			//create();
+			if(gameOver)
+				this.create();
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.N)) {
 			// NO and you're out
-			dispose();
+			if(gameOver)
+				this.dispose();
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.P)) {
-			// if game is running then pause the darn game and go do #2 and when returning it resumes
-			if(!paused)
-				pause();
-			else
-				resume();
+		if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
+			// Don't wanna start the game just wanna QUIT???
+			if(!started)
+				this.dispose();
 		}
 		
-		// and finally all mouse button functions - all one of them
+		if(Gdx.input.isKeyPressed(Input.Keys.P)) {
+			// if game is running then pause the darn game and go do #2 and when returning it resumes
+			// eitthvað fokk í gangi, keyrir þetta mörgum sinnum í hvert skipti
+			
+			if(paused)
+				this.resume();
+			else
+				this.pause();
+		}
+		
+		// and finally all mouse button functions - all one of them (for now)
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
 			// if game is not over or not started, left mouse button launches the ball thingy
 			if(!gameOver && !started){
