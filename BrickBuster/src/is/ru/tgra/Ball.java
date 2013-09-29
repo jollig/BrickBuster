@@ -1,84 +1,99 @@
 package is.ru.tgra;
 
-import java.nio.FloatBuffer;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.Point;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.utils.BufferUtils;
 
 public class Ball extends Actor {
 	// specific ball variables
-	private int radius = 10;
-	private ShapeRenderer renderer = new ShapeRenderer();
+	private float ballAngle;
+	private float ballSpeed;
+	private int radius, width, height;
+	private boolean inMotion = false;
+	
+	private ShapeRenderer renderer;
+	
+	private Vector2 speedV;
 
-	// spurning með constructors, verða sennilega að vera til staðar
-	void Ball() {
-		this.point.setX(0);
-		this.point.setY(0);
+	// constructors, some will cease to exist
+	Ball() {
+		super();
+		this.point.setX(0.0f);
+		this.point.setY(0.0f);
 		this.r = 1.0f;
 		this.b = 1.0f;
 		this.g = 1.0f;
+		this.create();
 	}
 	
-	void Ball(Point p) {
-		this.point.setX(p.getX());
-		this.point.setY(p.getY());
-		this.r = r;
-		this.b = b;
-		this.g = g;
-	}
-	
-	void Ball(float x, float y) {
-		this.point.setX((int)x);
-		this.point.setY((int)y);
-		this.r = r;
-		this.b = b;
-		this.g = g;
+	Ball(int r, int width, int height, int xPos) {
+		super();
+		this.radius = r;
+		this.width = width;
+		this.height = height;
+		this.point.setX(xPos);
+		this.r = 1.0f;
+		this.b = 1.0f;
+		this.g = 1.0f;
+		this.create();
 	}
 	
 	@Override
-	public void display(float x, float y) {
-		// TODO Auto-generated method stub
-		super.display(x, y);
-		
-		draw(x);
+	public void create() {
+		renderer = new ShapeRenderer();
+		speedV = new Vector2();
+	}
+	
+	@Override
+	public void display() {
+		update();
+		draw();
 	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		super.update();
-
+		// vantar tékk hvort bolti sé kominn niður fyrir launcher því þá er eitt líf farið
+		updateMouse();
+		angleSpeed();
 	}
 	
-	public void create() {
-		// TODO
-		
-		Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);	
-		FloatBuffer vertexBuffer = BufferUtils.newFloatBuffer(8);
-		vertexBuffer.put(new float[] {0,0, 0,radius, radius,0, radius,radius});
-		vertexBuffer.rewind();
-		Gdx.gl11.glVertexPointer(2, GL11.GL_FLOAT, 0, vertexBuffer);
-	}
-
-	public void draw(float x) {			// gæti þurft að bæta hér inn x og y ef það virkar ekki að sækja þetta með þeim hætti sem gert er
-		// TODO draw da dam balls
-		
+	@Override
+	public void draw() {
 		renderer.begin(ShapeType.FilledCircle);
 		renderer.setColor(r, g, b, 1);
-		renderer.filledCircle(x, 40, this.radius, 12);
+		renderer.filledCircle(this.point.getX(), this.point.getY(), this.radius, 12);
 		renderer.flush();
 		renderer.end();
+	}
+	
+	public void updateMouse() {
+		// if ball is not bounching around the universe it should sit on top of the launcher and move with it until set in motion
+		if(!inMotion) {							// vantar gameover líka
+			this.point.setY(height*2);
+			if(Gdx.input.getX()-width/2 <= 0) {
+				this.point.setX(width/2);
+	        }
+			else if(Gdx.input.getX()+width/2 >= Gdx.graphics.getWidth()) {
+				this.point.setX(Gdx.graphics.getWidth()-width/2);
+			} 
+			else {
+				this.point.setX(Gdx.input.getX());
+			}
+		}	
+	}
+	
+	public void lauchBall(double angle, float speed) {
+		this.ballAngle = (float)angle;
+		this.ballSpeed = speed;
+	}
+	
+	// how fast the ball is moving relative to the x- and y-axis
+	public void angleSpeed() {	
+		while(ballAngle>2*Math.PI) ballAngle-=2*Math.PI;
+		while(ballAngle<0.0) ballAngle+=2*Math.PI;
 		
-		//Gdx.gl11.glColor4f(r, g, b, 1.0f);
-    	//Gdx.gl11.glTranslatef(this.point.getX(), this.point.getY(), 0);		// ef eitthvað klikkar er það örugglega parent Point
-    	//Gdx.gl11.glTranslatef(, 10, 0);
-    	//Gdx.gl11.glDrawArrays(GL11.GL_TRIANGLE_FAN, 0, 12);
-    	//Gdx.gl11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
+		speedV.setX((float)((double)ballSpeed*Math.cos((double)ballAngle)));
+		speedV.setY((float)((double)ballSpeed*Math.sin((double)ballAngle)));
 	}
 	
 	// some hit detection needed

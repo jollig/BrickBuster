@@ -1,28 +1,36 @@
 package is.ru.tgra;
 
-import java.util.Random;
-
-import org.lwjgl.util.Point;
-
 public abstract class Actor {
 	// a Point object to store coordinates of the Actor
-	protected Point point = new Point();
+	protected Point point;
 	
-	// this application is wacky and implements random colors for each Actor. This should guarantee a seizure
-	Random rand = new Random();
-	protected float r = rand.nextFloat();
-	protected float g = rand.nextFloat();
-	protected float b = rand.nextFloat();
+	// this application is wacky and implements colors of in-game actors, would you believe???
+	protected float r;
+	protected float b;
+	protected float g;
 	
-	public void display(Point p) {
-		// this method must be overridden by child class
+	Actor() {
+		point = new Point();
+		point.setX(0.0f);
+		point.setY(0.0f);
+		r = 1.0f;
+		b = 1.0f;
+		g = 1.0f;
 	}
 	
-	public void display(float x, float y) {
-		// this method must be overridden by child class
+	protected void create() {
+		// this method can be overridden by child class
 	}
 	
-	public void update() {
-		// this method must be overridden by child class
+	protected void display() {
+		// this method can be overridden by child class
+	}
+	
+	protected void update() {
+		// this method can be overridden by child class
+	}
+	
+	protected void draw() {
+		// this method can be overridden by child class
 	}
 }
