@@ -61,8 +61,18 @@ public class BrickBuster implements ApplicationListener {
 		ball = new Ball(radius, launcherWidth, launcherHeight, Gdx.graphics.getWidth()/2);
 		actors.add(ball);
 		//ball - vantar að koma draslinu af stað
-		brick = new Brick();
-		actors.add(brick);
+		for(int i = 0;i<14;i++)
+		{
+			for(int j =0;j<4;j++)
+			{
+				brick = new Brick();
+				brick.point.setX((float)(50.0+(i*50.0)));
+				brick.point.setY((float)(450.0+(j*25.0)));
+				actors.add(brick);
+			}
+		}
+		//brick = new Brick();
+		//actors.add(brick);
 		//bricks/wall
 		
 		// logs what the h*** is happening

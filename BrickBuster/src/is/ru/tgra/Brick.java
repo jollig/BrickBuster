@@ -15,7 +15,13 @@ public class Brick extends Actor{
 	public Brick() {
 		super();
 		// TODO
+		this.width = 50;
+		this.height = 25;
+		this.r = 1.0f;
+		this.b = 0.2f;
+		this.g = 0.2f;
 		hit = false;
+		this.create();
 	}
 	
 	@Override
@@ -39,12 +45,17 @@ public class Brick extends Actor{
 		if(hit) {
 			return;
 		}
-		/*
+		
 		renderer.begin(ShapeType.FilledRectangle);
 		renderer.setColor(r, g, b, 1);
-		renderer.filledRect(this.point.getX(), this.point.getY()+height/2, (float)width, (float)height);  // breyta variables
+		renderer.filledRect(this.point.getX(), this.point.getY(), (float)width, (float)height);  // breyta variables
 		renderer.flush();
 		renderer.end();
-		*/		
+		
+		renderer.begin(ShapeType.Rectangle);
+		renderer.setColor(0.2f, 0.2f, 0.2f, 1);
+		renderer.rect(this.point.getX(), this.point.getY(), (float)width, (float)height);  // breyta variables
+		renderer.flush();
+		renderer.end();
 	}
 }
