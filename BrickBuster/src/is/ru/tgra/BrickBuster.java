@@ -8,6 +8,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Intersector;
 
 public class BrickBuster implements ApplicationListener {
@@ -36,6 +38,12 @@ public class BrickBuster implements ApplicationListener {
 	Launhcer launcher;
 	Ball ball;
 	Brick brick;
+	
+	private SpriteBatch spriteBatch;
+	private BitmapFont font;
+	private String textToDisplay;
+	private float textWidth;
+	private float textHeight;
 	
 	// á kannski heima í hverjum klasa fyrir sig - kemur í ljós
 	// random colors for the darn bricks to be knocked down
@@ -76,6 +84,10 @@ public class BrickBuster implements ApplicationListener {
 		
 		// set the amount of balls to use
 		ball.setBallCount(balls);
+		
+		// text stuff
+		spriteBatch = new SpriteBatch();
+		font = new BitmapFont();
 		
 		// logs what the h*** is happening
 		Gdx.app.log(BrickBuster.LOG, "Creating game");
@@ -187,6 +199,10 @@ public class BrickBuster implements ApplicationListener {
 			}
 		}
 		
+		if(ball.getBallCount() == 0) {
+			gameOver = true;
+		}
+		
 		//Gdx.app.log(BrickBuster.LOG, "Running update method");
 	}
 	
@@ -197,5 +213,17 @@ public class BrickBuster implements ApplicationListener {
 				a.display();
 			Gdx.gl11.glPopMatrix();
 		}		
+		
+		spriteBatch.begin();
+		font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		font.draw(spriteBatch, "Score: " + score + " Level: " + level + " Balls: " + ball.getBallCount(), 20, Gdx.graphics.getHeight()-20);
+		spriteBatch.end();
+		
+		if(gameOver) {
+			spriteBatch.begin();
+			font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+			font.draw(spriteBatch, "GAME OVER. GAME OVER MAN!", Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()/2);
+			spriteBatch.end();
+		}
 	}
 }

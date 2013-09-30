@@ -3,7 +3,6 @@ package is.ru.tgra;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
 public class Ball extends Actor {
@@ -49,7 +48,6 @@ public class Ball extends Actor {
 	public void create() {
 		renderer = new ShapeRenderer();
 		speedV = new Vector2();
-		ballCount = 3;
 	}
 	
 	@Override
@@ -153,7 +151,7 @@ public class Ball extends Actor {
 	}
 	
 	public void bounch() {
-		// don't have a clue where to start
+		// nothing working yet
 		
 	}
 }
