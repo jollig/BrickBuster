@@ -42,19 +42,21 @@ public class Brick extends Actor{
 	
 	@Override
 	public void draw() {
+		// if a brick has been hit it is not drawn again
 		if(hit) {
 			return;
 		}
 		
 		renderer.begin(ShapeType.FilledRectangle);
 		renderer.setColor(r, g, b, 1);
-		renderer.filledRect(this.point.getX(), this.point.getY(), (float)width, (float)height);  // breyta variables
+		renderer.filledRect(this.point.getX(), this.point.getY(), (float)width, (float)height);
 		renderer.flush();
 		renderer.end();
 		
+		// a small frame to distinguish one brick from another
 		renderer.begin(ShapeType.Rectangle);
 		renderer.setColor(0.2f, 0.2f, 0.2f, 1);
-		renderer.rect(this.point.getX(), this.point.getY(), (float)width, (float)height);  // breyta variables
+		renderer.rect(this.point.getX(), this.point.getY(), (float)width, (float)height);
 		renderer.flush();
 		renderer.end();
 	}

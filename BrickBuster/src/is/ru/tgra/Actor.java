@@ -18,6 +18,14 @@ public abstract class Actor {
 		g = 1.0f;
 	}
 	
+	public Point getPoint() {
+		return point;
+	}
+
+	public void setPoint(Point point) {
+		this.point = point;
+	}
+	
 	protected void create() {
 		// this method can be overridden by child class
 	}

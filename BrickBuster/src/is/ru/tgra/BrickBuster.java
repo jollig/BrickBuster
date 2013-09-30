@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.math.Intersector;
 
 public class BrickBuster implements ApplicationListener {
 	// constant useful for logging
@@ -19,12 +20,13 @@ public class BrickBuster implements ApplicationListener {
 	private int windowWidth = 800;
 	private int windowHeight = 600;	
 	private boolean paused = false;								// game is paused
-	private boolean inMotion = false;							// ball is in motion
+	//private boolean moving = false;							// ball is in motion
 	private boolean gameOver = false;							// game over man!!!
 	private int score = 0;										//
 	private int level = 1;										// this comes later
 	private int balls = 3;										//
 	
+	 private float elapsed= 0.01f;
 	
 	// Point object for coordinates of ingame thingies
 	private Point point = new Point();
@@ -48,7 +50,7 @@ public class BrickBuster implements ApplicationListener {
 	private double minAngle = Math.PI/6;						// 30 degrees in radians
 	private double maxAngle = 5*Math.PI/6;						// 150 degrees in radians
 	private double angle = Math.PI/3;							// ball starts at 45 degree angel
-	private float speed = 100;									// ball speed
+	private float speed = 10;									// ball speed
 	private int radius = 10;
 	
 	// vantar variables til að geyma coordinates og bolta og launcher meðan player fer að skíta
@@ -58,9 +60,9 @@ public class BrickBuster implements ApplicationListener {
 		// creating instances of object thingys in the game
 		launcher = new Launhcer(launcherWidth, launcherHeight, Gdx.graphics.getWidth()/2);
 		actors.add(launcher);
-		ball = new Ball(radius, launcherWidth, launcherHeight, Gdx.graphics.getWidth()/2);
+		ball = new Ball(radius, launcherWidth, launcherHeight, Gdx.graphics.getWidth()/2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), (float)angle, speed);
 		actors.add(ball);
-		//ball - vantar að koma draslinu af stað
+		// creating the brick wall
 		for(int i = 0;i<14;i++)
 		{
 			for(int j =0;j<4;j++)
@@ -71,9 +73,9 @@ public class BrickBuster implements ApplicationListener {
 				actors.add(brick);
 			}
 		}
-		//brick = new Brick();
-		//actors.add(brick);
-		//bricks/wall
+		
+		// set the amount of balls to use
+		ball.setBallCount(balls);
 		
 		// logs what the h*** is happening
 		Gdx.app.log(BrickBuster.LOG, "Creating game");
@@ -154,7 +156,7 @@ public class BrickBuster implements ApplicationListener {
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
 			// Don't wanna start the game just wanna QUIT???
-			if(!inMotion && gameOver)
+			if(!ball.isMoving() && gameOver)
 				this.dispose();
 		}
 		
@@ -170,43 +172,21 @@ public class BrickBuster implements ApplicationListener {
 		}
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-			if(!inMotion && !gameOver){
-				inMotion = true;
-				// launch the ball at a given angle and velocity
-				ball.lauchBall(angle, speed);
-				Gdx.app.log(BrickBuster.LOG, "Spacebar pressed");
+			if(!ball.isMoving() && !gameOver && ball.getBallCount() > 0) {
+				ball.setMoving(true);
+				ball.launchBall(angle, speed);
 			}
-			//Gdx.app.log(BrickBuster.LOG, "Spacebar pressed");
 		}
 		
 		// and finally all mouse button functions - all one of them (for now)
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
 			// if game is not over or not started, left mouse button launches the ball thingy
-			if(!inMotion && !gameOver){
-				inMotion = true;
-				// einhver vector fyrir angle sem boltinn fer af stað og hraða
-				ball.lauchBall(angle, speed);
-				Gdx.app.log(BrickBuster.LOG, "Left mouse button pressed");
+			if(!ball.isMoving() && !gameOver && ball.getBallCount() > 0) {
+				ball.setMoving(true);
+				ball.launchBall(angle, speed);	
 			}
-			//Gdx.app.log(BrickBuster.LOG, "Left mouse button pressed");
 		}
 		
-		// smá tilraun með að fá boltann af stað
-		if(inMotion) {
-			ball.point.setX(ball.point.getX()+5);
-			ball.point.setY(ball.point.getY()+5);
-			if(ball.point.getX() > Gdx.graphics.getWidth()-radius)
-				ball.point.setX(-ball.point.getX());
-			else if(ball.point.getX() < Gdx.graphics.getWidth())
-				ball.point.setX(-ball.point.getX());
-			/*
-			if(position_y > windowHeight-windowPosY)
-				ySpeed = -ySpeed;
-			else if(position_y < windowPosY)
-				ySpeed = -ySpeed;
-			*/
-		}
-				
 		//Gdx.app.log(BrickBuster.LOG, "Running update method");
 	}
 	
