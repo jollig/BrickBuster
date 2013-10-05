@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class Brick extends Actor{
 	// brick dimensions and position
-	private int width;
-	private int height;
+	private float width;
+	private float height;
 	
 	private boolean hit;
 	
@@ -59,5 +59,21 @@ public class Brick extends Actor{
 		renderer.rect(this.point.getX(), this.point.getY(), (float)width, (float)height);
 		renderer.flush();
 		renderer.end();
+	}
+
+	public float getWidth() {
+		return (float)width;
+	}
+
+	public float getHeight() {
+		return (float)height;
+	}
+
+	public boolean isHit() {
+		return hit;
+	}
+
+	public void setHit(boolean hit) {
+		this.hit = hit;
 	}
 }

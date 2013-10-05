@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class Launhcer extends Actor{
 	// launcher dimensions and position
-	private int width;
-	private int height;
+	private float width;
+	private float height;
 	
 	private ShapeRenderer renderer;
 	
@@ -16,7 +16,7 @@ public class Launhcer extends Actor{
 		super();
 		// default size, position and color of the launcher
 		width = 100;
-		height = 20;
+		height = 15;
 		this.point.setX(width/2);
 		this.point.setY(height);
 		r = 0.5f;
@@ -51,6 +51,8 @@ public class Launhcer extends Actor{
 	
 	@Override
 	public void update() {
+		// ball can never be hit
+		this.hit = false;
 		updateMouse();
 	}
 	
@@ -76,5 +78,13 @@ public class Launhcer extends Actor{
 		else {
 			this.point.setX(Gdx.input.getX()-width/2);
 		}
+	}
+
+	public float getWidth() {
+		return (float)width;
+	}
+
+	public float getHeight() {
+		return (float)height;
 	}
 }

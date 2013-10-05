@@ -58,32 +58,16 @@ public class Ball extends Actor {
 
 	@Override
 	public void update() {
+		// ball can never be hit, it's always a hittee
+		this.hit = false;
+		
 		// if the ball is not moving it follows the launcher until it is set into motion
 		if(!moving)
 			updateMouse();
 		
 		// collision checks with left, right and top margins of the window
-		if(moving) {	
-			// fara vel í gegnum þetta og sjá hvað í f..... er í gangi
-			if(this.point.getX() > Gdx.graphics.getWidth()-radius) {
-				speedV.x = -speedV.x;
-				this.point.setX(this.point.getX()+speedV.x);
-			}
-			else if(this.point.getX() < radius) {
-				speedV.x = -speedV.x;
-				this.point.setX(this.point.getX()+speedV.x);
-			}
-			if(this.point.getY() > Gdx.graphics.getHeight()-radius) {
-				speedV.y = -speedV.y;
-				this.point.setY(this.point.getY()+speedV.y);
-			}
-			else if(this.point.getY() < 0-radius)
-				resetBall();
-			else {
-				this.point.setX(this.point.getX()+speedV.x);
-				this.point.setY(this.point.getY()+speedV.y);
-			}
-		}
+		//sideWallCollision();
+		
 	}
 	
 	@Override
@@ -124,8 +108,30 @@ public class Ball extends Actor {
 		speedV.y = (float)((double)ballSpeed*Math.sin((double)ballAngle));
 	}
 	
-	// some hit detection needed
-	// change in direction when hitting something
+	// sidewall collision
+	public void sideWallCollision(){
+		if(moving) {	
+			// fara vel í gegnum þetta og sjá hvað í f..... er í gangi
+			if(this.point.getX() > Gdx.graphics.getWidth()-radius) {
+				speedV.x = -speedV.x;
+				this.point.setX(this.point.getX()+speedV.x);
+			}
+			else if(this.point.getX() < radius) {
+				speedV.x = -speedV.x;
+				this.point.setX(this.point.getX()+speedV.x);
+			}
+			if(this.point.getY() > Gdx.graphics.getHeight()-radius) {
+				speedV.y = -speedV.y;
+				this.point.setY(this.point.getY()+speedV.y);
+			}
+			else if(this.point.getY() < 0-radius)
+				resetBall();
+			else {
+				this.point.setX(this.point.getX()+speedV.x);
+				this.point.setY(this.point.getY()+speedV.y);
+			}
+		}
+	}
 	
 	public void resetBall() {
 		moving = false;
@@ -151,7 +157,25 @@ public class Ball extends Actor {
 	}
 	
 	public void bounch() {
-		// nothing working yet
-		
+		// nothing working yet	
+	}
+
+	public float getXSpeedV() {
+		return speedV.x;
+	}
+	
+	public float getYSpeedV() {
+		return speedV.y;
+	}
+
+	public void setXSpeedV(float x) {
+		this.speedV.x = x;
+	}
+	
+	public void setYSpeedV(float y) {
+		this.speedV.y = y;
 	}
 }
+	
+	
+	

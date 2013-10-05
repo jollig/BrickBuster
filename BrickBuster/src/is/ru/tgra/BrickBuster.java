@@ -67,23 +67,23 @@ public class BrickBuster implements ApplicationListener {
 	public void create() {
 		// creating instances of object thingys in the game
 		launcher = new Launhcer(launcherWidth, launcherHeight, Gdx.graphics.getWidth()/2);
-		actors.add(launcher);
+		//actors.add(launcher);
 		ball = new Ball(radius, launcherWidth, launcherHeight, Gdx.graphics.getWidth()/2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), (float)angle, speed);
-		actors.add(ball);
+		//actors.add(ball);
 		// creating the brick wall
 		for(int i = 0;i<14;i++)
 		{
 			for(int j =0;j<4;j++)
 			{
 				brick = new Brick();
-				brick.point.setX((float)(50.0+(i*50.0)));
-				brick.point.setY((float)(450.0+(j*25.0)));
-				actors.add(brick);
+				this.brick.point.setX((float)(50.0+(i*50.0)));
+				this.brick.point.setY((float)(450.0+(j*25.0)));
+				this.actors.add(brick);
 			}
 		}
 		
 		// set the amount of balls to use
-		ball.setBallCount(balls);
+		this.ball.setBallCount(balls);
 		
 		// text stuff
 		spriteBatch = new SpriteBatch();
@@ -184,29 +184,34 @@ public class BrickBuster implements ApplicationListener {
 		}
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-			if(!ball.isMoving() && !gameOver && ball.getBallCount() > 0) {
-				ball.setMoving(true);
-				ball.launchBall(angle, speed);
+			if(!this.ball.isMoving() && !gameOver && this.ball.getBallCount() > 0) {
+				this.ball.setMoving(true);
+				this.ball.launchBall(angle, speed);
 			}
 		}
 		
 		// and finally all mouse button functions - all one of them (for now)
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
 			// if game is not over or not started, left mouse button launches the ball thingy
-			if(!ball.isMoving() && !gameOver && ball.getBallCount() > 0) {
-				ball.setMoving(true);
-				ball.launchBall(angle, speed);	
+			if(!this.ball.isMoving() && !gameOver && this.ball.getBallCount() > 0) {
+				this.ball.setMoving(true);
+				this.ball.launchBall(angle, speed);	
 			}
 		}
 		
-		if(ball.getBallCount() == 0) {
+		if(this.ball.getBallCount() == 0) {
 			gameOver = true;
 		}
+		
+		collision();
 		
 		//Gdx.app.log(BrickBuster.LOG, "Running update method");
 	}
 	
 	public void drawScene() {
+		// tilraun með collision
+		this.launcher.display();
+		this.ball.display(); 
 		// each object in the array draws itself
 		for(Actor a : actors) {
 			Gdx.gl11.glPushMatrix();
@@ -224,6 +229,29 @@ public class BrickBuster implements ApplicationListener {
 			font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 			font.draw(spriteBatch, "GAME OVER. GAME OVER MAN!", Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()/2);
 			spriteBatch.end();
+		}
+	}
+	
+	public void collision() {
+		if(this.ball.point.getX() >= launcher.point.getX() && this.ball.point.getX() <= launcher.point.getX()+launcherWidth) {
+			if(this.ball.point.getY()-radius <= this.launcher.point.getY()+launcherHeight) {
+				this.ball.setYSpeedV(-this.ball.getYSpeedV());
+			}
+		}
+		
+		for(Actor a : actors){
+			/*
+			if(this.ball.point.getX() >= a.point.getX() && this.ball.point.getX() <= a.point.getX()+a.getWidth()) {
+				// vantar if sem virkar bara ef boltinn er á niðurleið
+				if(this.ball.point.getY()-radius == a.point.getY()+a.getHeight() || this.ball.point.getY()+radius == a.point.getY()) {
+					this.ball.setYSpeedV(-this.ball.getYSpeedV());
+					//a.setHit(true);
+					if(a.hit) {
+						actors.remove(a);
+						score +=50;
+					}
+				}*/
+			}
 		}
 	}
 }
